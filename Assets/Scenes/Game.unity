@@ -306,6 +306,12 @@ MonoBehaviour:
   _ammoClip: 6
   _reloadTime: 1.2
   _lives: 3
+  _tripleShot: {fileID: 5647776634372856052, guid: a4a98d0b6752db946aabbe1cd7c70925,
+    type: 3}
+  _tripleshotActive: 0
+  _speedBoostActive: 0
+  _shieldActive: 0
+  _powerupTime: 5
 --- !u!212 &844074593
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -485,6 +491,10 @@ MonoBehaviour:
   _enemyPrefab: {fileID: 7763783671235349203, guid: ed801409140d6354896b06ec16263686,
     type: 3}
   _enemyContainer: {fileID: 480906108}
+  powerups:
+  - {fileID: 5446218682584214900, guid: 76d87e1655b389541b47ecfb578bd2f0, type: 3}
+  - {fileID: 4345809018066750870, guid: b35f90ff23a289745bce987f31857bb6, type: 3}
+  - {fileID: 0}
   _spawnInterval: 5
 --- !u!4 &1325475165
 Transform:

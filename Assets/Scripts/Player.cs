@@ -6,6 +6,7 @@ public class Player : MonoBehaviour
 {
     [SerializeField]
     private float _speed = 3.5f;
+    private float _speedMultiplier = 2f;
     [SerializeField]
     private GameObject _laserPrefab;
     [SerializeField]
@@ -14,11 +15,22 @@ public class Player : MonoBehaviour
     private float _reloadTime = 1.2f;
     [SerializeField]
     private int _lives = 3;
+    [SerializeField]
+    private GameObject _tripleShot;
+    [SerializeField]
+    private bool _tripleshotActive = false;
+    [SerializeField]
+    private bool _speedBoostActive = false;
+    [SerializeField]
+    private bool _shieldActive = false;
+    [SerializeField]
+    private float _powerupTime = 5f;
+
     private SpawnManager _spawnManager;
-
-
     private bool _laserCanFire = true;
     private int _shotCount = 0;
+
+
 
 
     // Start is called before the first frame update
@@ -45,9 +57,14 @@ public class Player : MonoBehaviour
     {
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
+        float calculatedSpeed = _speed;
+        if (!!_speedBoostActive)
+        {
+            calculatedSpeed = calculatedSpeed * _speedMultiplier;
+        }
 
         // Time.deltaTime is realtime (per second)
-        transform.Translate(new Vector3(horizontalInput, verticalInput, 0) * _speed * Time.deltaTime);
+        transform.Translate(new Vector3(horizontalInput, verticalInput, 0) * calculatedSpeed * Time.deltaTime);
 
         transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, -3.8f, 0), 0);
 
@@ -64,7 +81,15 @@ public class Player : MonoBehaviour
 
     void ShootLaser()
     {
-        Instantiate(_laserPrefab, transform.position + new Vector3(0, 1.25f, 0), Quaternion.identity);
+        if(_tripleshotActive)
+            Instantiate(_tripleShot, transform.position + new Vector3(0, 1.25f, 0), Quaternion.identity);
+        else
+            Instantiate(_laserPrefab, transform.position + new Vector3(0, 1.25f, 0), Quaternion.identity);
+
+        //if space key press,
+        //if tripleshotActive is true
+            //fire 3 lasers (triple shot prefab)
+
         _shotCount += 1;
         if (_shotCount >= _ammoClip)
         {
@@ -89,5 +114,41 @@ public class Player : MonoBehaviour
             _spawnManager.OnPlayerDeath();
             Destroy(this.gameObject);
         }
+    }
+
+    public void TripleShotPowerup()
+    {
+        _tripleshotActive = true;
+        StartCoroutine(FiveSecondTripleShot());
+    }
+
+    public void SpeedPowerup()
+    {
+        _speedBoostActive = true;
+        StartCoroutine(FiveSecondSpeed());
+    }
+
+    public void ShieldPowerup()
+    {
+        _shieldActive = true;
+        StartCoroutine(FiveSecondShield());
+    }
+
+    IEnumerator FiveSecondTripleShot()
+    {
+        yield return new WaitForSeconds(_powerupTime);
+        _tripleshotActive = false;
+    }
+
+    IEnumerator FiveSecondSpeed()
+    {
+        yield return new WaitForSeconds(_powerupTime);
+        _speedBoostActive = false;
+    }
+
+    IEnumerator FiveSecondShield()
+    {
+        yield return new WaitForSeconds(_powerupTime);
+        _shieldActive = false;
     }
 }

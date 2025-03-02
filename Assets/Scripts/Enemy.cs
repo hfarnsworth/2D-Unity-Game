@@ -12,8 +12,7 @@ public class Enemy : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        float randomX = Random.Range(-_mirroredXRange, _mirroredXRange);
-        transform.position = new Vector3(randomX, 7.6f, 0);
+
     }
 
     // Update is called once per frame
