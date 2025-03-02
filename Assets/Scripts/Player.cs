@@ -33,7 +33,10 @@ public class Player : MonoBehaviour
     private bool _laserCanFire = true;
     private int _shotCount = 0;
 
+    [SerializeField]
+    private int _score = 0;
 
+    private UIManager _uiManager;
 
 
     // Start is called before the first frame update
@@ -41,10 +44,13 @@ public class Player : MonoBehaviour
     {
         transform.position = new Vector3(0, 0, 0);
         _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
+        _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
 
         if (_spawnManager == null)
             Debug.LogError("The Spawn Manager is NULL.");
 
+        if (_uiManager == null)
+            Debug.LogError("The UI Manager is NULL.");
     }
 
     // Update is called once per frame
@@ -158,9 +164,9 @@ public class Player : MonoBehaviour
         _speedBoostActive = false;
     }
 
-    //IEnumerator FiveSecondShield()
-    //{
-    //    yield return new WaitForSeconds(_powerupTime);
-    //    _shieldActive = false;
-    //}
+    public void EnemyPoints(int points)
+    {
+        _score += points;
+        _uiManager.UpdateScore(_score);
+    }
 }

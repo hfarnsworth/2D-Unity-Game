@@ -9,10 +9,12 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     private float _mirroredXRange = 10.5f;
 
+    private Player _player;
+
     // Start is called before the first frame update
     void Start()
     {
-
+        _player = GameObject.Find("Player").GetComponent<Player>();
     }
 
     // Update is called once per frame
@@ -33,8 +35,14 @@ public class Enemy : MonoBehaviour
         {
             Destroy(this.gameObject);
             Destroy(other.gameObject);
+
+            if (_player != null)
+            {
+                _player.EnemyPoints(10);
+            }
         }
-        else if(other.transform.tag == "Player")
+        
+        if(other.transform.tag == "Player")
         {
             Player player = other.transform.GetComponent<Player>();
             if(player != null)
