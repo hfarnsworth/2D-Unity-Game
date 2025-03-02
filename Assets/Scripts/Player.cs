@@ -6,6 +6,7 @@ public class Player : MonoBehaviour
 {
     [SerializeField]
     private float _speed = 3.5f;
+    [SerializeField]
     private float _speedMultiplier = 2f;
     [SerializeField]
     private GameObject _laserPrefab;
@@ -18,13 +19,15 @@ public class Player : MonoBehaviour
     [SerializeField]
     private GameObject _tripleShot;
     [SerializeField]
-    private bool _tripleshotActive = false;
-    [SerializeField]
-    private bool _speedBoostActive = false;
-    [SerializeField]
-    private bool _shieldActive = false;
-    [SerializeField]
     private float _powerupTime = 5f;
+
+
+    private bool _tripleshotActive = false;
+    private bool _speedBoostActive = false;
+    public bool shieldActive = false;
+
+    [SerializeField]
+    private GameObject _shieldVisualizer;
 
     private SpawnManager _spawnManager;
     private bool _laserCanFire = true;
@@ -107,9 +110,17 @@ public class Player : MonoBehaviour
 
     public void Damage()
     {
+
+        if (shieldActive)
+        {
+            shieldActive = false;
+            _shieldVisualizer.SetActive(false);
+            return;
+        }
+
         _lives--;
 
-        if (_lives < 1 )
+        if (_lives < 1)
         {
             _spawnManager.OnPlayerDeath();
             Destroy(this.gameObject);
@@ -130,8 +141,9 @@ public class Player : MonoBehaviour
 
     public void ShieldPowerup()
     {
-        _shieldActive = true;
-        StartCoroutine(FiveSecondShield());
+        shieldActive = true;
+        _shieldVisualizer.SetActive(true);
+        //StartCoroutine(FiveSecondShield());
     }
 
     IEnumerator FiveSecondTripleShot()
@@ -146,9 +158,9 @@ public class Player : MonoBehaviour
         _speedBoostActive = false;
     }
 
-    IEnumerator FiveSecondShield()
-    {
-        yield return new WaitForSeconds(_powerupTime);
-        _shieldActive = false;
-    }
+    //IEnumerator FiveSecondShield()
+    //{
+    //    yield return new WaitForSeconds(_powerupTime);
+    //    _shieldActive = false;
+    //}
 }
