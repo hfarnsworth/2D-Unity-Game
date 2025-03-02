@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -125,6 +126,7 @@ public class Player : MonoBehaviour
         }
 
         _lives--;
+        _uiManager.UpdatesLives(_lives);
 
         if (_lives < 1)
         {
