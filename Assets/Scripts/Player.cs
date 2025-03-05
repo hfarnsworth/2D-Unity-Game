@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(AudioSource))]
 public class Player : MonoBehaviour
 {
     [SerializeField]
@@ -29,6 +30,10 @@ public class Player : MonoBehaviour
 
     [SerializeField]
     private GameObject _shieldVisualizer;
+    [SerializeField]
+    private GameObject _damageVisualizer1;
+    [SerializeField]
+    private GameObject _damageVisualizer2;
 
     private SpawnManager _spawnManager;
     private bool _laserCanFire = true;
@@ -39,19 +44,27 @@ public class Player : MonoBehaviour
 
     private UIManager _uiManager;
 
+    private AudioSource _audioSource;
+    [SerializeField]
+    private AudioClip _laserAudio;
+    [SerializeField]
+    private AudioClip _powerUpAudio;
+
 
     // Start is called before the first frame update
     void Start()
     {
         transform.position = new Vector3(0, 0, 0);
+
         _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
+        if (_spawnManager == null) Debug.LogError("The Spawn Manager is NULL.");
+
         _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
+        if (_uiManager == null) Debug.LogError("The UI Manager is NULL.");
 
-        if (_spawnManager == null)
-            Debug.LogError("The Spawn Manager is NULL.");
-
-        if (_uiManager == null)
-            Debug.LogError("The UI Manager is NULL.");
+        _audioSource = GetComponent<AudioSource>();
+        if (_audioSource == null) Debug.LogError("AudioSource on the Player is NULL.");
+        else _audioSource.clip = _laserAudio;
     }
 
     // Update is called once per frame
@@ -106,6 +119,9 @@ public class Player : MonoBehaviour
             _laserCanFire = false;
             StartCoroutine(LaserReloadTimer());
         }
+
+        _audioSource.clip = _laserAudio;
+        _audioSource.Play();
     }
 
     IEnumerator LaserReloadTimer()
@@ -128,6 +144,16 @@ public class Player : MonoBehaviour
         _lives--;
         _uiManager.UpdatesLives(_lives);
 
+        if(_lives == 2)
+        {
+            _damageVisualizer1.SetActive(true);
+        }
+
+        if (_lives == 1)
+        {
+            _damageVisualizer2.SetActive(true);
+        }
+
         if (_lives < 1)
         {
             _spawnManager.OnPlayerDeath();
@@ -137,21 +163,26 @@ public class Player : MonoBehaviour
 
     public void TripleShotPowerup()
     {
+        _audioSource.clip = _powerUpAudio;
+        _audioSource.Play();
         _tripleshotActive = true;
         StartCoroutine(FiveSecondTripleShot());
     }
 
     public void SpeedPowerup()
     {
+        _audioSource.clip = _powerUpAudio;
+        _audioSource.Play();
         _speedBoostActive = true;
         StartCoroutine(FiveSecondSpeed());
     }
 
     public void ShieldPowerup()
     {
+        _audioSource.clip = _powerUpAudio;
+        _audioSource.Play();
         shieldActive = true;
         _shieldVisualizer.SetActive(true);
-        //StartCoroutine(FiveSecondShield());
     }
 
     IEnumerator FiveSecondTripleShot()
